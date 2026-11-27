@@ -176,8 +176,29 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   private String getErrorMessage(WebClientResponseException ex) {
     try {
       return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-    } catch (JacksonException ioex) {
+    } catch (JacksonException jex) {
       return ex.getMessage();
     }
+  }
+
+  public Mono<Health> getProductHealth() {
+    return getHealth(productServiceBaseUrl);
+  }
+
+  public Mono<Health> getRecommendationHealth() {
+    return getHealth(recommendationServiceBaseUrl);
+  }
+
+  public Mono<Health> getReviewHealth() {
+    return getHealth(reviewServiceBaseUrl);
+  }
+
+  private Mono<Health> getHealth(String baseUrl) {
+    String url = baseUrl + "/actuator/health";
+    LOG.debug("Will call the Health API on URL: {}", url);
+    return webClient.get().uri(url).retrieve().bodyToMono(String.class)
+        .map(s -> Health.up().build())
+        .onErrorResume(ex -> Mono.just(Health.down(ex).build()))
+        .log(LOG.getName(), FINE);
   }
 }
