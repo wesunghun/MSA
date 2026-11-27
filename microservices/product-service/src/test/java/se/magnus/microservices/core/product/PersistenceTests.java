@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.mongodb.test.autoconfigure.DataMongoTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 
 import reactor.test.StepVerifier;
 import se.magnus.microservices.core.product.persistence.ProductEntity;
@@ -18,6 +21,9 @@ class PersistenceTests extends MongoDbTestBase {
 
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private ReactiveMongoTemplate mongoTemplate;
 
     private ProductEntity savedEntity;
 

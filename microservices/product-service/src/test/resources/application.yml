@@ -1,3 +1,16 @@
 spring:
+  data:
     mongodb:
-        auto-index-creation: true
+      auto-index-creation: true
+  cloud:
+    stream:
+      defaultBinder: rabbit
+      bindings:
+        messageProcessor-in-0:
+          destination: products
+          group: productsGroup
+          binder: rabbit
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.amqp.autoconfigure.RabbitAutoConfiguration
+      - org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration
